@@ -4,7 +4,7 @@
 Simple python script which scrapes your stats from middlecoin mining pool
 and use mtgox to calculate total btc value to your currency of choice. 
 
-please change (HISTORY_URL, WALLET, MTGOX to your needs)
+please change (HISTORY_JSON, WALLET, MTGOX to your needs)
 
 if you like it send a donation
 BTC: 1EN27w1mMHp6mTaHk5RNoSVo7ZGwbMeH45
