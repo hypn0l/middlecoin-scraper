@@ -1,13 +1,34 @@
 #!/usr/bin/env python
 
 """
-Simple python script which scrapes your stats from middlecoin mining pool
-and use mtgox to calculate total btc value to your currency of choice. 
+@title: ...........middlecoinscraper
+@author: ..........jonjez
+@date: ............2014:01:27
 
-please change (HISTORY_JSON, WALLET, MTGOX to your needs)
+--[Requirements]--
+Please change the HISTORY_JSON and WALLET to match your wallet.
 
-if you like it send a donation
+--[Description]--
+
+This script could be used to scrape middlecoin from your stats
+and history. it will also get the latest currency of your choice
+value from mtgox in high/low/avg
+
+please feel free to use and improve the script, if you like it you are more than
+welcome to send me a donation.
+
 BTC: 1EN27w1mMHp6mTaHk5RNoSVo7ZGwbMeH45
+
+--[Future]--
+Will change "get_mywallet()" function to retrieve the information from json instead.
+hopefully he will implement a user specific json file instead of downloading a 3mb
+json file for each iteration.
+
+BASE_URL = "http://www.middlecoin.com/allusers.html"
+HISTORY_JSON = "http://www.middlecoin.com/reports/{wallet}.json"
+WALLET = "{wallet}"
+MTGOX = "http://data.mtgox.com/api/1/BTCSEK/ticker"
+
 
 """
 
@@ -17,9 +38,9 @@ import json
 import time
 
 BASE_URL = "http://www.middlecoin.com/allusers.html"
-HISTORY_JSON = "http://www.middlecoin.com/reports/{your btc wallet address}.json"
-WALLET = "{Your wallet address}"
-MTGOX = "http://data.mtgox.com/api/1/{your currency(example BTCSEK)}/ticker"
+HISTORY_JSON = "http://www.middlecoin.com/reports/{wallet}.json"
+WALLET = "{wallet}"
+MTGOX = "http://data.mtgox.com/api/1/BTCSEK/ticker"
 
 def get_mywallet(url):
     GLOBAL = WALLET
@@ -40,9 +61,12 @@ def get_test_hist(url):
     for x in total:
         transid = x['txid']
         unixtime = time.ctime(x['time'])
-        amount = x['amount']
-        print transid,"/", unixtime,"/", amount, "BTC"
-
+        amount = float(x['amount'])
+        SEK_HIGH = amount * get_mtgox_sek_high(MTGOX)
+        SEK_LOW = amount * get_mtgox_sek_low(MTGOX)
+        SEK_AVG = amount * get_mtgox_sek_avg(MTGOX)
+        #print transid,"/", unixtime,"/", amount, "BTC"
+        print unixtime,"\t", amount, "BTC\t", SEK_HIGH,"SEK\t", SEK_LOW,"SEK\t", SEK_AVG,"SEK"
 
 
 def get_mtgox_sek_high(url):
@@ -67,21 +91,22 @@ def get_total_btc(url):
     return float(total)
 
 
+
 get_mywallet(BASE_URL)
-print "Transaction ID: \t\t\t\t\t\t\t\t\t\t\t\t   Time:   \t\t\t\t\t  Amount:"
+print "Time:\t\t\t\t\t\tAmount\Day:\t\tMTGOX High:\t\t\tMTGOX Low:\t\t\tMTGOX Avg:"
 get_test_hist(HISTORY_JSON)
-print "Total BTC:",get_total_btc(HISTORY_JSON)
+print "Middlecoin Paid Out BTC:",get_total_btc(HISTORY_JSON)
 print "\n"
 
 print "BTC Stats:"
-print "************************************************************************************************************"
+print "*"*101
 print "Mtgox High:",get_mtgox_sek_high(MTGOX), "SEK"
 print "Mtgox Low:",get_mtgox_sek_low(MTGOX), "SEK"
 print "Mtgox Avg:",get_mtgox_sek_avg(MTGOX), "SEK"
 print "\n"
 
 print "Total:"
-print "************************************************************************************************************"
-print "High:",get_mtgox_sek_high(MTGOX) * get_total_btc(HISTORY_JSON), "SEK (MTGOX)"
-print "Low:",get_mtgox_sek_low(MTGOX) * get_total_btc(HISTORY_JSON), "SEK (MTGOX)"
-print "Avg:",get_mtgox_sek_avg(MTGOX) * get_total_btc(HISTORY_JSON), "SEK (MTGOX)"
+print "*"*101
+print "High:",get_total_btc(HISTORY_JSON) * get_mtgox_sek_high(MTGOX), "SEK (MTGOX)"
+print "Low:",get_total_btc(HISTORY_JSON) * get_mtgox_sek_low(MTGOX), "SEK (MTGOX)"
+print "Avg:",get_total_btc(HISTORY_JSON) * get_mtgox_sek_avg(MTGOX), "SEK (MTGOX)"
