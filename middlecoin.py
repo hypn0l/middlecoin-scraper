@@ -24,12 +24,6 @@ Will change "get_mywallet()" function to retrieve the information from json inst
 hopefully he will implement a user specific json file instead of downloading a 3mb
 json file for each iteration.
 
-BASE_URL = "http://www.middlecoin.com/allusers.html"
-HISTORY_JSON = "http://www.middlecoin.com/reports/{wallet}.json"
-WALLET = "{wallet}"
-MTGOX = "http://data.mtgox.com/api/1/BTCSEK/ticker"
-
-
 """
 
 from bs4 import BeautifulSoup
